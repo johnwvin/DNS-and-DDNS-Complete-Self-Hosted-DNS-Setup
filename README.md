@@ -215,10 +215,10 @@ sudo docker-compose up -d
   4. Enable HTTPS (optional): 
      navigate to settings > web service: 
      check the enable https box,
-     change the HTTPS Port to 443 for simplicity or leave it as is, you can also give a totally different unused one as well      just make sure you open the port in your YAML file.
+     change the HTTPS Port to 443 for simplicity or leave it as is. You can also give any unused port number as long as you       open the port in your YAML file.
      you can also check the box to redirect http to https.
-     specify your certificate and it's location in the TLS Certificate Input(if you followed the steps assiduously, input         this: ./ssl/certificate.pfx)
-     in the next input box "TLS Certificate Password" give the export password you created with your .pfx certificate             generation.
+     specify your certificate and it's location in the TLS Certificate Input (if you followed these steps assiduously, input      this: ./ssl/certificate.pfx).
+     In the next input box "TLS Certificate Password" give the export password you created with your .pfx certificate             generation.
      You can now access your Technitium GUI using https.  
 
   5. Specify forwarders:
