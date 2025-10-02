@@ -151,24 +151,24 @@ sudo docker-compose up -d
 
 ## DDNS 
  
- ~ for the DDNS server we must get an API token, as previously stated here are the steps:
-
+1. For the Cloudflare DDNS server we must get an API token, as previously stated here are the steps:
+```
       My Profile > API Tokens > Create Token
       choose "Edit zone DNS" template
       specify domain under "Zone resources"
       click continue and then create token.
+```
 
 
+2. Prepare the DDNS server YAML
 
- ~ now let's get the DDNS server YAML ready
-
-
+```
 nano ~/network-services/ddns/docker-compose.yml
+```
 
+   Paste this into the .YAML and replace the api_key, zone, and domain with your info:
 
- ~ paste this into the .YAML and replace the api_key, zone, and domain with your data:
-
-
+```
 version: "3.7"
 
 services:
@@ -194,7 +194,7 @@ services:
       - ZONE=[YOUR.DOMAIN]
       - SUBDOMAIN=[SUBDOMAIN]
       - PROXIED=false
-
+```
 
  ~ you can now run sudo docker-compose up -d within the ddns directory to have your IP address dynamically update within your domain's A records
  
