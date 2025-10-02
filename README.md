@@ -15,7 +15,7 @@ Why DDNS?
 
 # Technitium DNS Server and Cloudflare DDNS Installation:
 
-First, access your Ubuntu Server update, upgrade, and install docker and docker-compose with their brief online guide: https://docs.docker.com/engine/install/ubuntu/
+Firstly, access your Ubuntu Server update, upgrade, and install Docker and Docker-compose by following their brief online guide: https://docs.docker.com/engine/install/ubuntu/
 
 Next, disable the local DNS server already running on the ubuntu machine:
 
