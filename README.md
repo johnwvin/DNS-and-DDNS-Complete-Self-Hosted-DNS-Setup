@@ -73,7 +73,7 @@ We will be giving our DNS server a certificate for use with https (skip this if 
 
 NOTE: We won't implement the certificate until after we gain access to the GUI.   
 
-### Self-signed ertificate Method(Simplest):
+### Self-signed Certificate Method(Simplest):
 
 ```
 mkdir ~/cert/
