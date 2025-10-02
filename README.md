@@ -1,4 +1,5 @@
 # Technitium DNS and DDNS Complete Self-Hosted DNS Setup Guide
+
 A simple, easy-to-follow guide on setting up your own DNS Server with Technitium, and cloudflare's DDNS server to update your public DNS records when your public IP address dynamically changes.
 
 Prerequisites:
@@ -10,30 +11,39 @@ Why Technitium?
 - Technitium is a reliable and simple DNS server, equipped with a GUI for ease of management.
   
 Why DDNS?
-- We need a DDNS server if our public IP assignment is dynamic, if yours is static don't worry about setting up DDNS, simply create your A records on Cloudflare's website and you're done. You don't have to worry about your public IP changes being reflected on your public DNS records.
+- We need a DDNS server if our public IP assignment is dynamic, if your's is static don't worry about setting up DDNS, simply create your A records on Cloudflare's website statically and you're done. You don't have to worry about your public IP changes being reflected on your public DNS records.
 
 # Technitium DNS Server and Cloudflare DDNS installation:
 
- ~ First, access your Ubuntu Server and install docker and docker-compose with their online guide:
-   https://docs.docker.com/engine/install/ubuntu/
-   
- ~ create these directories to use:
+First, access your Ubuntu Server update, upgrade, and install docker and docker-compose with their brief online guide: https://docs.docker.com/engine/install/ubuntu/
 
+Next, disable the local DNS server already running on the ubuntu machine:
 
+```
+sudo systemctl stop systemd-resolved
+sudo systemctl disable systemd-resolved
+sudo rm /etc/resolv.conf
+echo -e "nameserver 1.1.1.1\nnameserver 8.8.8.8" | sudo tee /etc/resolv.conf # change this command to match your preferred dns servers
+```
+
+Create these directories to use:
+
+```
 mkdir ~/network-services
 mkdir ~/network-services/dns
 mkdir ~/network-services/ddns
+```
 
+## Technitium
 
- ~ create the Technitium DNS server docker-compose .yaml file
-
-
+Create the Technitium DNS server docker-compose .yaml file
+```
 nano ~/network-services/docker-compose.yml
+```
 
+Insert this into the docker-compose.yml file and replace the placeholders with your info:
 
- ~ insert this into the yaml and replace [YOUR.DOMAIN]:
-
-
+```
 version: "3.7"
 
 services:
@@ -57,90 +67,89 @@ services:
     environment:
       - DNS_SERVER_DOMAIN=dns.[YOUR.DOMAIN]
     restart: unless-stopped
+```
 
+We will be giving our DNS server a certificate for use with https (skip this if you don't want to use HTTPS)
 
- ~ we will be giving our DNS server a certificate for use of https (skip this if you don't want to use HTTPS)
-   NOTE: We won't actually implement the certificate until after we gain access to the GUI.   
+NOTE: We won't actually implement the certificate until after we gain access to the GUI.   
 
- ~ Self-signed method(simplest):
+### Self-signed method(simplest):
 
-   you must get an origin certificate and private key as a pair to create the required .pfx file for Technitium. This is available at cloudflare under 
-   'TLS settings > origin certificate', click create certificate, use defaults except make sure you specify the correct domain in the creation process. this will 
-   give you a certificate and private key. save the certificate as a .pem file and the private key as a .key file on your computer as a backup.
+```
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ~/cert/private.key -out ~/cert/certificate.crt
+```
 
-   once you have the certificate.pem and private.key, put them into a directory on your DNS server's machine and get the .pfx token:
+```
+openssl pkcs12 -export -out ~/network-services/dns/config/ssl/certificate.pfx -inkey ~/cert/private.key -in ~/cert/certificate.crt
+```
 
+and you're done!
+
+### Cloudflare Origin Certificate Method:
+
+This is the most useful method if you are only concerned with your certificate being valid and trusted by Cloudflare's servers. You must get an origin certificate and private key as a pair to create the required .pfx file for Technitium. This is available at cloudflare under 'SSL/TLS settings > origin certificate', click create certificate, use defaults except make sure you specify the correct domain in the creation process. this will give you a certificate and private key. save the certificate as a .pem file and the private key as a .key file on your computer as a backup.
+
+once you have the certificate.pem and private.key, put them into a directory on your DNS server's machine and generate the .pfx token:
+```
 mkdir ~/cert
-nano ~/cert/private.key # paste the key here
-nano ~/cert/certificate.pem # paste the origin cert here
+nano ~/cert/private.key # paste the private key here
+nano ~/cert/certificate.pem # paste the origin certificate here
 sudo apt install openssl
 mkdir ~/network-services/dns/config/
 mkdir ~/network-services/dns/config/ssl
-openssl pkcs12 -export -out ~/network-services/dns/config/ssl/certificate.pfx -inkey ~/cert/private.key -in ~/cert/certificate.pem
+sudo openssl pkcs12 -export -out ~/network-services/dns/config/ssl/certificate.pfx -inkey ~/cert/private.key -in ~/cert/certificate.pem
+```
 
- ~ Trusted Certificate method:
+### Trusted Certificate method:
    
-   1. Obtain an API token from cloudflare
-      My Profile > API Tokens > Create Token
-      choose "Edit zone DNS" template
-      specify domain under "Zone resources"
+   1. Obtain an API token from Cloudflare
+      My Profile > API Tokens > Create Token, 
+      choose "Edit zone DNS" template, 
+      specify domain under "Zone resources", 
       click continue and then create token.
 
-   2. save the token to a file named cloudflare.ini in a secure place as backup.
+   2. Save the token to a file named cloudflare.ini in a secure place as backup.
       
-      now let's paste it onto your Ubuntu machine: 
+      Now let's paste it onto your Ubuntu machine: 
 
+```
 mkdir ~/cert
 nano ~/cert/cloudflare.ini # (paste the token here as a key/value pair with this key: 'dns_cloudflare_api_token = ' prepending the token. format: dns_cloudflare_api_token = [your api token]) 
+```
 
-This next command is very important:
+```
+chmod 600 ~/cert/cloudflare.ini # (required by certbot to avoid security flag)
+```
 
-chmod 600 ~/cert/cloudflare.ini # (required by certbot)
-
-   3. install certbot and it's cloudflare plugin
-
+   3. Install Certbot and it's Cloudflare plugin
+```
 sudo apt update
 sudo apt install certbot python3-certbot-dns-cloudflare
-
-   4. replace placeholders and request the certificate:
-
+```
+   4. Replace placeholders and request the certificate:
+```
 sudo certbot certonly \
  --dns-cloudflare \
  --dns-cloudflare-credentials ~/cert/cloudflare.ini \
  -d dns.[YOUR.DOMAIN] \
  --agree-tos \
  -m [YOUR EMAIL ADDRESS]
-
-   5. Convert the certbot output to a .pfx for technitium using openssl(it will prompt you for a password, make note of your choice for later):
-
+```
+   5. Convert the Certbot output to a .pfx for Technitium's requirement using OpenSSL (it will prompt you for a password,          make note of your choice for later):
+```
 mkdir ~/network-services/dns/config/
 mkdir ~/network-services/dns/config/ssl/
 sudo openssl pkcs12 -export -out ~/network-services/dns/config/ssl/certificate.pfx \
  -inkey /etc/letsencrypt/live/dns.[YOUR.DOMAIN]/privkey.pem \
  -in /etc/letsencrypt/live/dns.[YOUR.DOMAIN]/fullchain.pem
-
-
-
- ~ once you have generated the .pfx with either method, you may delete the '~/cert' directory, however I would do this after full functionality has been verified, 
-   (in case an error is made).
-
- ~ now we must disable the local DNS server already running on the ubuntu machine
-
-
-sudo systemctl stop systemd-resolved
-sudo systemctl disable systemd-resolved
-sudo rm /etc/resolv.conf
-echo -e "nameserver 1.1.1.1\nnameserver 8.8.8.8" | sudo tee /etc/resolv.conf 
-# change this last command to match your preferred dns servers if you will
-
-
- ~ you may now start the service:
-
+```
+You may now start the service:
+```
 cd ~/network-services/dns/
 sudo docker-compose up -d
+```
 
-
- ~ Now we will Configure the DDNS service 
+## DDNS 
  
  ~ for the DDNS server we must get an API token, as previously stated here are the steps:
 
