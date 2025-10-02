@@ -6,19 +6,21 @@ A simple, easy-to-follow guide on setting up your own DNS Server with Technitium
 
  ~ A registered domain name
  
- ~ A cloudflare account with your domain onboarded
+ ~ A Cloudflare account with your public domain onboarded (a simple process, make an account and click the onboard button then follow the steps)
  
  ~ Ubuntu 24
 
- ~ We need a DDNS and DNS server because our IP is dynamic
 
- ~ For DDNS, and a trusted certificate to use with https, you must get an API key from cloudflare explained later.
+ - Why DDNS?
+   ~ We need a DDNS server if our public IP assignment is dynamic, if yours is static don't worry about setting up DDNS, simply create your A records on Cloudflare's website
+     and you're done. You don't have to worry about your public IP changes being reflected on your public DNS records.
 
 -Technitium and cloudflare DDNS installation:
 
- ~ First open your server and install docker and docker-compose with their online guide
-
- ~ create directories to use:
+ ~ First, access your Ubuntu Server and install docker and docker-compose with their online guide:
+   https://docs.docker.com/engine/install/ubuntu/
+   
+ ~ create these directories to use:
 
 
 mkdir ~/network-services
@@ -26,7 +28,7 @@ mkdir ~/network-services/dns
 mkdir ~/network-services/ddns
 
 
- ~ create the DNS server compose yaml(Technitium in our case for ease)
+ ~ create the Technitium DNS server docker-compose .yaml file
 
 
 nano ~/network-services/docker-compose.yml
