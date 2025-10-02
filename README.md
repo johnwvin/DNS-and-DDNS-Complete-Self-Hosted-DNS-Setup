@@ -204,7 +204,7 @@ sudo docker-compose up -d
    
 ## Configuring Technitium:
 
-###### Now let's navigate to our DNS server's GUI and change some settings:
+##### Basic Configuration:
 
   1. Go to your browser and in the URL input box type: [YOUR DNS SERVER's IP]:5380
 
@@ -214,22 +214,19 @@ sudo docker-compose up -d
 
   4. Enable HTTPS (optional): 
      navigate to settings > web service: 
-     check the enable https box
-     change the HTTPS Port to 443 for simplicity or leave it as is, you can also give a totally different unused one as well just make sure you specify
-     the port in your YAML file as the others are.
-     you can also check the box to redirect http to https, as recommended for security.
-     specify your certificate name and location in the TLS Certificate Input(if you followed the steps assiduously, input this: ./ssl/certificate.pfx)
-     in the next input box "TLS Certificate Password" give the export password you created with your .pfx certificate.
-     you can now access your site using https.  
+     check the enable https box,
+     change the HTTPS Port to 443 for simplicity or leave it as is, you can also give a totally different unused one as well      just make sure you open the port in your YAML file.
+     you can also check the box to redirect http to https.
+     specify your certificate and it's location in the TLS Certificate Input(if you followed the steps assiduously, input         this: ./ssl/certificate.pfx)
+     in the next input box "TLS Certificate Password" give the export password you created with your .pfx certificate             generation.
+     You can now access your Technitium GUI using https.  
 
   5. Specify forwarders:
-     under settings > Proxy & Forwarders insert some public DNS server IPs to use for forwarding. This is so a device using your DNS server will still be able to
-     reach a URL not listed in your local DNS server's records. 
+     Under settings > Proxy & Forwarders insert some public DNS server IPs to use for forwarding. This enables a device           using your DNS server to reach a URL not listed in your local DNS server's records. 
 
-  6. Change your home router's DNS server to your local one, or just change your devices' DNS server if you prefer. This step is crucial for accessing your custom 
-     DNS records.
+  6. Change your home router's preferred DNS server to your local one, and change your devices' preferred DNS server as well      if your router doesn't propagate a DNS server change automatically. This step is crucial for accessing your custom DNS       records.
     
- ~ Now let's add some records:
+ ##### Input A records and access GUI from dns.[YOUR.DOMAIN]:
 
    1. Click on the zones tab.
    
