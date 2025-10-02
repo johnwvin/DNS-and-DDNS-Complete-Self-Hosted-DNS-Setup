@@ -226,7 +226,7 @@ sudo docker-compose up -d
 
   6. Change your home router's preferred DNS server to your local one, and change your devices' preferred DNS server as well      if your router doesn't propagate a DNS server change automatically. This step is crucial for accessing your custom DNS       records.
     
- ### Store local A records and access GUI from dns.[YOUR.DOMAIN]:
+ ### Store local DNS records and access the Technitium GUI from dns.[YOUR.DOMAIN]:
 
    1. Click on the zones tab.
    
@@ -236,10 +236,6 @@ sudo docker-compose up -d
    
    4. Now in the lists of zones you will see your domain, you can click the name to open the zone's tab (if it didn't              redirect automatically).
 
-   5. In the upper region you will see "add record", click this and make sure A record is selected. In the 'name'                  field insert "dns" (or your preferred subdomain name for your dns server). Next specify the IP address of your DNS           server in the respective IP address field. Save this record and now you will be able to access the Technitium                GUI or even SSH to the server using the subdomain URL. Repeat these steps for any local IP address you want to assign        to a subdomain.
+   5. In the upper region of the page you will find "add record", click this and make sure A record is selected. In the            'name' field insert "dns". Next specify the IP address of your DNS server in the respective IP address field. Save           this record and now you will be able to access the Technitium GUI or even SSH to the server using the subdomain URL.         Repeat this step for any local IP address you want to assign to a subdomain.
 
-~ You now have a complete home lab DNS set up! It's worth noting that you can obtain block lists(for ads, scams, etc.) to give your technitium server, much like you
-  would a pihole machine. find them here: https://github.com/hagezi/dns-blocklists, choose the level of blocking you want and make sure you use the list designated for 
-  technitium. In Techinitium's GUI, navigate to the 'Blocked' tab and select import. copy and paste the list of URLs here.
-
-   
+You now have a complete home lab DNS set up! It's worth noting that you can obtain block lists(for ads, scams, etc.) to give your technitium server, much like you would a pihole machine, a filter for bad traffic. Find them here: https://github.com/hagezi/dns-blocklists, choose the level of blocking you want and make sure you use the list designated for technitium. In Techinitium's GUI, navigate to the 'Blocked' tab and select import. Copy and paste the list of URLs here.
