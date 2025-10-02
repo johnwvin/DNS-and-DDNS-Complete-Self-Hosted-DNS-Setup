@@ -4,9 +4,11 @@ A simple, easy-to-follow guide on setting up your own DNS Server with Technitium
 
 -Prerequisites:
 
- A domain name
- A cloudflare account with your domain onboarded
- Ubuntu 24
+ ~ A registered domain name
+ 
+ ~ A cloudflare account with your domain onboarded
+ 
+ ~ Ubuntu 24
 
  ~ We need a DDNS and DNS server because our IP is dynamic
 
