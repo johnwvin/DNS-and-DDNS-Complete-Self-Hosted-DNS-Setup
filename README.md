@@ -13,7 +13,7 @@ Why Technitium?
 Why DDNS?
 - We need a DDNS server if our public IP assignment is dynamic, if your's is static don't worry about setting up DDNS, simply create your public DNS 'A' records on Cloudflare's website statically and you're done. You don't have to worry about your public IP changes being reflected on your public DNS records.
 
-# Technitium DNS Server and Cloudflare DDNS installation:
+# Technitium DNS Server and Cloudflare DDNS Installation:
 
 First, access your Ubuntu Server update, upgrade, and install docker and docker-compose with their brief online guide: https://docs.docker.com/engine/install/ubuntu/
 
