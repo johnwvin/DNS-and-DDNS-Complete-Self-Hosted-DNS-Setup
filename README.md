@@ -5,7 +5,7 @@ A simple, easy-to-follow guide on setting up a local DNS Server with Technitium,
 Prerequisites:
 - A registered domain name
 - A Cloudflare account with your public domain onboarded (this is easy to achieve, simply make an account and click the onboard button then follow the steps)
-- A server/VM running Ubuntu 24
+- A host running Ubuntu 24
 
 Why Technitium?
 - Technitium is a reliable and simple DNS server, equipped with a GUI for ease of management.
