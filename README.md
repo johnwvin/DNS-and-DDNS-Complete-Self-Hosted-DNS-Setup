@@ -160,13 +160,13 @@ sudo docker-compose up -d
 ```
 
 
-2. Prepare the DDNS server YAML
+2. Prepare the DDNS server docker-compose.yml file
 
 ```
 nano ~/network-services/ddns/docker-compose.yml
 ```
 
-   Paste this into the .YAML and replace the api_key, zone, and domain with your info:
+   Paste this into the .YML and replace the placeholders with your info:
 
 ```
 version: "3.7"
@@ -181,10 +181,9 @@ services:
       - ZONE=[YOUR.DOMAIN]
       - DOMAIN=[YOUR.DOMAIN]
       - PROXIED=false
-
- ~ if you would like to add a subdomain to your public A records you may do so by adding this into the .YML file, under the one we pasted previously, 
-   just replace [SUBDOMAIN] with something (for example: vpn for a vpn service):
- 
+```
+   If you would like to add a subdomain to your public A records to update dynamically as well, you may do so by adding this    into the .YML file, under the     one we pasted previously, just replace [SUBDOMAIN] with something (for example: vpn for    a VPN service):
+``` 
   cloudflare-ddns-dns:
     image: oznu/cloudflare-ddns:latest
     container_name: cloudflare-ddns-dns
@@ -196,11 +195,16 @@ services:
       - PROXIED=false
 ```
 
- ~ you can now run sudo docker-compose up -d within the ddns directory to have your IP address dynamically update within your domain's A records
- 
-- Configuring Technitium:
+3. Run the container:
+```
+cd ~/network-services/ddns
+sudo docker-compose up -d
+```
+   You can now navigate to your Cloudflare dashboard for your domain and see your A records dynamically update.
+   
+## Configuring Technitium:
 
- ~ Now let's navigate to our DNS server's GUI and change some settings:
+###### Now let's navigate to our DNS server's GUI and change some settings:
 
   1. Go to your browser and in the URL input box type: [YOUR DNS SERVER's IP]:5380
 
