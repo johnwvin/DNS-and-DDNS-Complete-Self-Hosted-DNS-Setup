@@ -226,7 +226,7 @@ sudo docker-compose up -d
 
   6. Change your home router's preferred DNS server to your local one, and change your devices' preferred DNS server as well      if your router doesn't propagate a DNS server change automatically. This step is crucial for accessing your custom DNS       records.
     
- ### Store local DNS records and access the Technitium GUI from dns.[YOUR.DOMAIN]:
+ ### Store local DNS records and access the Technitium GUI from a subdomain URL:
 
    1. Click on the zones tab.
    
