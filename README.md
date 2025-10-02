@@ -11,7 +11,7 @@ Why Technitium?
 - Technitium is a reliable and simple DNS server, equipped with a GUI for ease of management.
   
 Why DDNS?
-- We need a DDNS server if our public IP assignment is dynamic, if your's is static don't worry about setting up DDNS, simply create your A records on Cloudflare's website statically and you're done. You don't have to worry about your public IP changes being reflected on your public DNS records.
+- We need a DDNS server if our public IP assignment is dynamic, if your's is static don't worry about setting up DDNS, simply create your public DNS 'A' records on Cloudflare's website statically and you're done. You don't have to worry about your public IP changes being reflected on your public DNS records.
 
 # Technitium DNS Server and Cloudflare DDNS installation:
 
