@@ -202,7 +202,7 @@ sudo docker-compose up -d
 ```
    You can now navigate to your Cloudflare dashboard for your domain and see your A records dynamically update.
    
-## Configuring Technitium:
+# Configuring Technitium:
 
 ### Basic Configuration:
 
