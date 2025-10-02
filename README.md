@@ -81,7 +81,7 @@ sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ~/cert/private.
 ```
 
 ```
-openssl pkcs12 -export -out ~/network-services/dns/config/ssl/certificate.pfx -inkey ~/cert/private.key -in ~/cert/certificate.crt
+sudo openssl pkcs12 -export -out ~/network-services/dns/config/ssl/certificate.pfx -inkey ~/cert/private.key -in ~/cert/certificate.crt
 ```
 
 and you're done!
