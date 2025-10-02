@@ -204,7 +204,7 @@ sudo docker-compose up -d
    
 ## Configuring Technitium:
 
-##### Basic Configuration:
+### Basic Configuration:
 
   1. Go to your browser and in the URL input box type: [YOUR DNS SERVER's IP]:5380
 
@@ -226,21 +226,17 @@ sudo docker-compose up -d
 
   6. Change your home router's preferred DNS server to your local one, and change your devices' preferred DNS server as well      if your router doesn't propagate a DNS server change automatically. This step is crucial for accessing your custom DNS       records.
     
- ##### Input A records and access GUI from dns.[YOUR.DOMAIN]:
+ ### Store local A records and access GUI from dns.[YOUR.DOMAIN]:
 
    1. Click on the zones tab.
    
    2. Click add zone in the upper right corner.
 
-   3. input your domain name (example.com) and save.
+   3. Input your domain name (example.com) and save.
    
-   4. now in the lists of zones you will see your domain, you can click the name to open the zone's tab where we'll add our subdomains(if it didn't redirect
-      automatically).
+   4. Now in the lists of zones you will see your domain, you can click the name to open the zone's tab (if it didn't              redirect automatically).
 
-   5. in the upper region you will see add record, click it and make sure A record is selected and then we'll start with our first record for DNS. Within the name
-      field insert 'dns' and specify the IP address of your DNS server in the respective field. Save this record and now you will be able to access the technetium
-      GUI or even SSH to the server using the subdomain URL. Repeat these steps for any IP you want to assign a subdomain to, including public IPs. For example you
-      could assign a domain to cloudflare's DNS server (1.1.1.1 > clouddns.your.domain), or maybe you want a subdomain for your vm!
+   5. In the upper region you will see "add record", click this and make sure A record is selected. In the 'name'                  field insert "dns" (or your preferred subdomain name for your dns server). Next specify the IP address of your DNS           server in the respective IP address field. Save this record and now you will be able to access the Technitium                GUI or even SSH to the server using the subdomain URL. Repeat these steps for any local IP address you want to assign        to a subdomain.
 
 ~ You now have a complete home lab DNS set up! It's worth noting that you can obtain block lists(for ads, scams, etc.) to give your technitium server, much like you
   would a pihole machine. find them here: https://github.com/hagezi/dns-blocklists, choose the level of blocking you want and make sure you use the list designated for 
