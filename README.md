@@ -15,7 +15,7 @@ Why DDNS?
 
 # Technitium DNS Server and Cloudflare DDNS Installation:
 
-Firstly, access your Ubuntu Server update, upgrade, and install Docker and Docker-compose by following their brief online guide: https://docs.docker.com/engine/install/ubuntu/
+Firstly, access your Ubuntu Server machine's CLI and then update, upgrade, and install Docker and Docker-compose by following their brief online guide: https://docs.docker.com/engine/install/ubuntu/
 
 Next, disable the local DNS server already running on the ubuntu machine:
 
@@ -38,7 +38,7 @@ mkdir ~/network-services/ddns
 
 Create the Technitium DNS server docker-compose .yaml file
 ```
-nano ~/network-services/docker-compose.yml
+nano ~/network-services/dns/docker-compose.yml
 ```
 
 Insert this into the docker-compose.yml file and replace the placeholders with your info:
@@ -71,11 +71,12 @@ services:
 
 We will be giving our DNS server a certificate for use with https (skip this if you don't want to use HTTPS)
 
-NOTE: We won't actually implement the certificate until after we gain access to the GUI.   
+NOTE: We won't implement the certificate until after we gain access to the GUI.   
 
 ### Self-signed method(simplest):
 
 ```
+mkdir ~/cert/
 sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ~/cert/private.key -out ~/cert/certificate.crt
 ```
 
@@ -87,7 +88,7 @@ and you're done!
 
 ### Cloudflare Origin Certificate Method:
 
-This is the most useful method if you are only concerned with your certificate being valid and trusted by Cloudflare's servers. You must get an origin certificate and private key as a pair to create the required .pfx file for Technitium. This is available at cloudflare under 'SSL/TLS settings > origin certificate', click create certificate, use defaults except make sure you specify the correct domain in the creation process. this will give you a certificate and private key. save the certificate as a .pem file and the private key as a .key file on your computer as a backup.
+This is the most useful method if you are only concerned with your certificate being valid and trusted by Cloudflare's servers. You must get an origin certificate and private key as a pair to create the required .pfx file for Technitium. This is available at Cloudflare's website under 'SSL/TLS settings > origin certificate'. Click create certificate, use defaults except make sure you specify the correct domain in the creation process. this will give you a certificate and private key. save the certificate as a .pem file and the private key as a .key file on your computer as a backup.
 
 once you have the certificate.pem and private.key, put them into a directory on your DNS server's machine and generate the .pfx token:
 ```
@@ -114,7 +115,7 @@ sudo openssl pkcs12 -export -out ~/network-services/dns/config/ssl/certificate.p
 
 ```
 mkdir ~/cert
-nano ~/cert/cloudflare.ini # (paste the token here as a key/value pair with this key: 'dns_cloudflare_api_token = ' prepending the token. format: dns_cloudflare_api_token = [your api token]) 
+nano ~/cert/cloudflare.ini # (paste the token here as a key/value pair with this: 'dns_cloudflare_api_token = ' prepending the token to complete it. format: dns_cloudflare_api_token = [your api token]) 
 ```
 
 ```
@@ -135,7 +136,7 @@ sudo certbot certonly \
  --agree-tos \
  -m [YOUR EMAIL ADDRESS]
 ```
-   5. Convert the Certbot output to a .pfx for Technitium's requirement using OpenSSL (it will prompt you for a password,          make note of your choice for later):
+   5. Convert the Certbot output to a .pfx for Technitium's requirement using OpenSSL (it will prompt you for a password, make note of your choice for later):
 ```
 mkdir ~/network-services/dns/config/
 mkdir ~/network-services/dns/config/ssl/
@@ -151,7 +152,7 @@ sudo docker-compose up -d
 
 ## DDNS 
  
-1. For the Cloudflare DDNS server we must get an API token, as previously stated here are the steps:
+1. For the Cloudflare DDNS server we must get an API token. As previously stated here are the steps:
 ```
       My Profile > API Tokens > Create Token
       choose "Edit zone DNS" template
@@ -166,7 +167,7 @@ sudo docker-compose up -d
 nano ~/network-services/ddns/docker-compose.yml
 ```
 
-   Paste this into the .YML and replace the placeholders with your info:
+   Paste the following into this YAML and replace the placeholders with your info:
 
 ```
 version: "3.7"
@@ -182,7 +183,7 @@ services:
       - DOMAIN=[YOUR.DOMAIN]
       - PROXIED=false
 ```
-   If you would like to add a subdomain to your public A records to update dynamically as well, you may do so by adding this    into the .YML file, under the     one we pasted previously, just replace [SUBDOMAIN] with something (for example: vpn for    a VPN service):
+   If you would like to add a subdomain to your public A records to update dynamically as well, you may do so by adding this into the .YML file (underneath the one we          pasted previously), just replace [SUBDOMAIN] with something (for example: vpn for a VPN service):
 ``` 
   cloudflare-ddns-dns:
     image: oznu/cloudflare-ddns:latest
@@ -200,7 +201,7 @@ services:
 cd ~/network-services/ddns
 sudo docker-compose up -d
 ```
-   You can now navigate to your Cloudflare dashboard for your domain and see your A records dynamically update.
+   You can now navigate to your Cloudflare DNS dashboard for the domain and see your DNS 'A' records dynamically update.
    
 # Configuring Technitium:
 
@@ -213,18 +214,18 @@ sudo docker-compose up -d
   3. navigate to settings > general and uncheck/disable DNSSEC to avoid any issues
 
   4. Enable HTTPS (optional): 
-     navigate to settings > web service: 
-     check the enable https box,
-     change the HTTPS Port to 443 for simplicity or leave it as is. You can also give any unused port number as long as you       open the port in your YAML file.
+     Navigate to settings > web service: 
+     check the enable https box. 
+     Change the HTTPS Port to 443 for simplicity or leave it as is. You can also give any unused port number as long as you open the port in your YAML file.
      you can also check the box to redirect http to https.
-     specify your certificate and it's location in the TLS Certificate Input (if you followed these steps assiduously, input      this: ./ssl/certificate.pfx).
-     In the next input box "TLS Certificate Password" give the export password you created with your .pfx certificate             generation.
+     Specify your certificate and it's location in the TLS Certificate Input (if you followed these steps assiduously, input this: ./ssl/certificate.pfx).
+     In the next input box "TLS Certificate Password" give the export password you created with your .pfx certificate generation.
      You can now access your Technitium GUI using https.  
 
   5. Specify forwarders:
-     Under settings > Proxy & Forwarders insert some public DNS server IPs to use for forwarding. This enables a device           using your DNS server to reach a URL not listed in your local DNS server's records. 
+     Under settings > Proxy & Forwarders insert some public DNS server IPs to use for forwarding. This enables a device using your DNS server to reach a URL not listed in        your local DNS server's records. 
 
-  6. Change your home router's preferred DNS server to your local one, and change your devices' preferred DNS server as well      if your router doesn't propagate a DNS server change automatically. This step is crucial for accessing your custom DNS       records.
+  6. Change your home router's preferred DNS server to your local one, and change your devices' preferred DNS server as well if your router doesn't propagate a DNS server        change automatically. This step is crucial for accessing your custom DNS records.
     
  ### Store local DNS records and access the Technitium GUI from a subdomain URL:
 
@@ -234,8 +235,8 @@ sudo docker-compose up -d
 
    3. Input your domain name (example.com) and save.
    
-   4. Now in the lists of zones you will see your domain, you can click the name to open the zone's tab (if it didn't              redirect automatically).
+   4. Now in the list of zones you will see your domain name, you can click the name to open the zone's tab.
 
-   5. In the upper region of the page you will find "add record", click this and make sure A record is selected. In the            'name' field insert "dns". Next specify the IP address of your DNS server in the respective IP address field. Save           this record and now you will be able to access the Technitium GUI or even SSH to the server using the subdomain URL.         Repeat this step for any local IP address you want to assign to a subdomain.
+   5. In the upper region of the page you will find "add record", click this and make sure 'A' record is selected. In the 'name' field insert "dns". Next specify the IP           address of your DNS server in the respective IP address field. Save this record and now you will be able to access the Technitium GUI or even SSH to the server using        the subdomain URL. Repeat this step for any local IP address you want to assign to a subdomain.
 
-You now have a complete home lab DNS set up! It's worth noting that you can obtain block lists(for ads, scams, etc.) to give your technitium server, much like you would a pihole machine, a filter for bad traffic. Find them here: https://github.com/hagezi/dns-blocklists, choose the level of blocking you want and make sure you use the list designated for technitium. In Techinitium's GUI, navigate to the 'Blocked' tab and select import. Copy and paste the list of URLs here.
+You now have a complete local DNS set up! It's worth noting that you can obtain block lists(for ads, scams, etc.) to give your technitium server, much like you would a pihole machine, to filter for bad traffic. Find them here: https://github.com/hagezi/dns-blocklists, choose the level of blocking you want and make sure you use the list designated for Technitium. In Techinitium's GUI, navigate to the 'Blocked' tab and select import. Copy and paste the list of URLs here.
