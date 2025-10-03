@@ -1,4 +1,4 @@
-# Technitium DNS and DDNS Complete Self-Hosted DNS Setup Guide
+# Technitium DNS and DDNS Complete Installation and Setup Guide
 
 A simple, easy-to-follow guide on setting up a local DNS Server with Technitium, and Cloudflare's DDNS server to update your public DNS records when your public IP address dynamically changes.
 
